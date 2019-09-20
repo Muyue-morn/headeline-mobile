@@ -54,17 +54,21 @@ export default {
   data () {
     return {
       user: {
-        mobile: '',
-        code: '246810'
+        mobile: '15911111111',
+        code: '24681'
       },
       isLoading: false,
       isDisabled: true,
       codeText: '发送验证码',
       codeAbled: false,
-      time: 50
+      time: 5
     }
   },
   methods: {
+    /**
+     * 判断本地存储是否存在tiem以及他是否大于0,防止刷新验证码计时器失效,以便刷新重启计时器
+     *
+     */
     existTime () {
       let time = window.localStorage.getItem('time')
       time > 0 && this.sendCode(time, false)
@@ -113,6 +117,7 @@ export default {
         this.isLoading = true
         let { data } = await loginUp(this.user)
         this.isLoading = false
+        this.$toast.success('登陆成功')
         console.log(data)
       } catch (err) {
         if (err.response && err.response.status === 400) {
