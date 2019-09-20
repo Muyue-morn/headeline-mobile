@@ -2,8 +2,18 @@
   <div>
     <van-tabs v-model="active">
       <van-tab v-for="channel in channels" :key="channel.id" :title="channel.name">
-        <van-list v-model="channels[active].loading" :finished="channels[active].finished" finished-text="没有更多了" @load="onLoad">
-          <van-cell v-for="item in channels[active].list" :key="item" :title="item" />
+        <van-list
+          v-model="currentChannel.loading"
+          :finished="currentChannel.finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+          style="margin-bottom:50px"
+        >
+          <van-cell
+            v-for="item in currentChannel.list"
+            :key="item.art_id.toString()"
+            :title="item.title"
+          />
         </van-list>
       </van-tab>
     </van-tabs>
@@ -12,6 +22,7 @@
 
 <script>
 import { getChannels } from '@/api/channel'
+import { getAllArticles } from '@/api/articles'
 export default {
   name: 'HomeIndex',
   data () {
@@ -20,7 +31,13 @@ export default {
       channels: []
     }
   },
+  computed: {
+    currentChannel () {
+      return this.channels[this.active]
+    }
+  },
   methods: {
+
     /**
      * 获得频道列表
      */
@@ -30,28 +47,40 @@ export default {
         channel.list = []
         channel.loading = false
         channel.finished = false
+        channel.pre_timestamp = null
       })
       this.channels = data.data.channels
     },
     /**
      * list拉取数据
      */
-    onLoad () {
+    async onLoad () {
       // 获取每个频道的对象
-      let channel = this.channels[this.active]
+      let channel = this.currentChannel
       // 异步更新数据
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          channel.list.push(channel.list.length + 1)
-        }
-        // 加载状态结束
-        channel.loading = false
+      /**
+       * 获取频道对应文章数据
+       */
+      let { data } = await getAllArticles({
+        channel_id: this.active,
+        timestamp: channel.pre_timestamp || Date.now(),
+        with_top: 1
+      })
+      // console.log(data)
+      // 语言风格问题变量不可以是非驼峰命名这里重命名了
+      const { pre_timestamp: preTimestamp, results } = data.data
+      channel.list.push(...results)
 
-        // 数据全部加载完成
-        if (channel.list.length >= 40) {
-          channel.finished = true
-        }
-      }, 500)
+      // 加载状态结束
+      channel.loading = false
+
+      // 数据全部加载完成
+      if (preTimestamp === null) {
+        channel.finished = true
+      } else {
+        // 保存时间戳
+        channel.pre_timestamp = preTimestamp
+      }
     }
   },
   created () {

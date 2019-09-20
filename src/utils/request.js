@@ -2,7 +2,7 @@
  * @Author: advance.YiYunmu
  * @Date: 2019-09-18 16:20:37
  * @Last Modified by: advance.YiYunmu
- * @Last Modified time: 2019-09-20 21:21:30
+ * @Last Modified time: 2019-09-20 22:12:14
  * 请求函数封装
  */
 
@@ -26,7 +26,7 @@ const request = axios.create({
       return data
     }
   }],
-  headers: { 'Authorization': `Bearer ${store.state.user.token}` }
+  headers: { 'Authorization': `Bearer${store.state.user.token}` }
 })
 
 /**
