@@ -18,7 +18,8 @@ import {
   TabbarItem,
   Search,
   Tab,
-  Tabs
+  Tabs,
+  List
 } from 'vant'
 Vue.use(Component)
 Vue.config.productionTip = false
@@ -34,6 +35,7 @@ Vue.use(Button)
   .use(Search)
   .use(Tab)
   .use(Tabs)
+  .use(List)
 new Vue({
   router,
   store,
