@@ -17,17 +17,14 @@
 </template>
 
 <script>
-import { getChannels } from '@/api/channel'
+
 export default {
+  name: 'TabbarIndex',
   data () {
     return {
       active: 0,
       value: ''
     }
-  },
-  async created () {
-    let s = await getChannels()
-    console.log(s)
   }
 }
 </script>

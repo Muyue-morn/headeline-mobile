@@ -16,7 +16,9 @@ import {
   Toast,
   Tabbar,
   TabbarItem,
-  Search
+  Search,
+  Tab,
+  Tabs
 } from 'vant'
 Vue.use(Component)
 Vue.config.productionTip = false
@@ -30,6 +32,8 @@ Vue.use(Button)
   .use(Tabbar)
   .use(TabbarItem)
   .use(Search)
+  .use(Tab)
+  .use(Tabs)
 new Vue({
   router,
   store,

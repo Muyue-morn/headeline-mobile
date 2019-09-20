@@ -51,7 +51,7 @@
 import { loginUp } from '@/api/user'
 
 export default {
-  name: 'login',
+  name: 'LoginIndex',
   data () {
     return {
       user: {
