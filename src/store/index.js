@@ -1,15 +1,22 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { setToken, getToken } from '@/store/storage'
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  state: {
-
-  },
-  mutations: {
-
-  },
-  actions: {
-
+const state = {
+  user: getToken('user')
+}
+const mutations = {
+  saveToken (state, user) {
+    state.user = user
+    setToken('user', user)
   }
+}
+const actions = {
+
+}
+export default new Vuex.Store({
+  state,
+  mutations,
+  actions
 })

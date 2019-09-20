@@ -49,6 +49,7 @@
 
 <script>
 import { loginUp } from '@/api/user'
+
 export default {
   name: 'login',
   data () {
@@ -118,7 +119,8 @@ export default {
         let { data } = await loginUp(this.user)
         this.isLoading = false
         this.$toast.success('登陆成功')
-        console.log(data)
+        this.$store.commit('saveToken', data.data)
+        this.$router.push('/tabbar')
       } catch (err) {
         if (err.response && err.response.status === 400) {
           this.$toast.fail('手机号或验证码错误')

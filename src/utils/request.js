@@ -2,12 +2,13 @@
  * @Author: advance.YiYunmu
  * @Date: 2019-09-18 16:20:37
  * @Last Modified by: advance.YiYunmu
- * @Last Modified time: 2019-09-18 20:14:06
+ * @Last Modified time: 2019-09-20 21:21:30
  * 请求函数封装
  */
 
 import axios from 'axios'
 import JsonBigInt from 'json-bigint'
+import store from '@/store'
 /**
  * 克隆一个axios,并设置基础请求Url
  */
@@ -24,7 +25,8 @@ const request = axios.create({
       // 无法转换的数据直接原样返回
       return data
     }
-  }]
+  }],
+  headers: { 'Authorization': `Bearer ${store.state.user.token}` }
 })
 
 /**
