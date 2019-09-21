@@ -1,3 +1,10 @@
+/*
+ * @Author: advance.YiYunmu
+ * @Date: 2019-09-21 20:25:54
+ * @Last Modified by: advance.YiYunmu
+ * @Last Modified time: 2019-09-21 21:12:08
+ * 主入口文件
+ */
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -23,7 +30,10 @@ import {
   Grid,
   GridItem,
   Image,
-  PullRefresh
+  PullRefresh,
+  Popup,
+  Lazyload,
+  Loading
 } from 'vant'
 Vue.use(Component)
 Vue.config.productionTip = false
@@ -44,6 +54,9 @@ Vue.use(Button)
   .use(GridItem)
   .use(Image)
   .use(PullRefresh)
+  .use(Popup)
+  .use(Lazyload)
+  .use(Loading)
 
 Vue.filter('relativeTime', relativeTime)
 new Vue({

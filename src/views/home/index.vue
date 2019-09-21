@@ -1,5 +1,8 @@
 <template>
   <van-tabs v-model="active">
+    <div slot="nav-right" class="wapbtn">
+      <van-button icon="wap-nav" hairline type="default" @click="isChannelEditShow = true" />
+    </div>
     <van-tab v-for="channel in channels" :key="channel.id" :title="channel.name">
       <van-pull-refresh v-model="channel.isLoading" @refresh="onRefresh">
         <van-list
@@ -17,7 +20,11 @@
             <template slot="label">
               <van-grid :border="false" :column-num="item.cover.images.length">
                 <van-grid-item v-for="(img,index) in item.cover.images" :key="index">
-                  <van-image :src="img" />
+                  <van-image :src="img" lazy-load>
+                    <template v-slot:loading>
+                      <van-loading type="spinner" size="20" />
+                    </template>
+                  </van-image>
                 </van-grid-item>
               </van-grid>
               <div class="article-info">
@@ -30,6 +37,14 @@
         </van-list>
       </van-pull-refresh>
     </van-tab>
+    <van-popup
+      v-model="isChannelEditShow"
+      closeable
+      round
+      close-icon-position="top-left"
+      position="bottom"
+      :style="{ height: '95%' }"
+    />
   </van-tabs>
 </template>
 
@@ -40,6 +55,7 @@ export default {
   name: 'HomeIndex',
   data () {
     return {
+      isChannelEditShow: false,
       active: 0, // 当前频道的索引
       channels: []// 频道列表
     }
@@ -145,7 +161,12 @@ export default {
   right: 0;
   left: 0;
 }
-/deep/.van-tabs__content{
+/deep/.van-tabs__content {
   margin-top: 90px;
+}
+.wapbtn {
+  position: sticky;
+  right: 0;
+  top: 0;
 }
 </style>
