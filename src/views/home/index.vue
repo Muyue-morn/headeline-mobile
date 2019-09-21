@@ -133,9 +133,19 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.article-info{
-  span{
+.article-info {
+  span {
     margin: 3px 5px;
   }
+}
+/deep/.van-tabs__wrap {
+  position: fixed;
+  top: 44px;
+  z-index: 2;
+  right: 0;
+  left: 0;
+}
+/deep/.van-tabs__content{
+  margin-top: 90px;
 }
 </style>

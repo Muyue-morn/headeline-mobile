@@ -1,8 +1,8 @@
 <template>
   <div>
     <!-- 头部标题栏 -->
-    <van-nav-bar>
-      <van-search placeholder="请输入搜索关键词" v-model="value" slot="title" shape="round" background="#1989fa" style="padding:5px" />
+    <van-nav-bar fixed>
+      <van-search  placeholder="请输入搜索关键词" v-model="value" slot="title" shape="round" background="#1989fa" style="padding:5px" />
     </van-nav-bar>
     <!-- 主视图 -->
     <router-view></router-view>
