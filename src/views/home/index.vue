@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <van-tabs v-model="active">
-      <van-tab v-for="channel in channels" :key="channel.id" :title="channel.name">
+  <van-tabs v-model="active">
+    <van-tab v-for="channel in channels" :key="channel.id" :title="channel.name">
+      <van-pull-refresh v-model="channel.isLoading" @refresh="onRefresh">
         <van-list
           v-model="currentChannel.loading"
           :finished="currentChannel.finished"
@@ -24,9 +24,9 @@
             </template>
           </van-cell>
         </van-list>
-      </van-tab>
-    </van-tabs>
-  </div>
+      </van-pull-refresh>
+    </van-tab>
+  </van-tabs>
 </template>
 
 <script>
@@ -36,27 +36,54 @@ export default {
   name: 'HomeIndex',
   data () {
     return {
-      active: 0,
-      channels: []
+      active: 0, // 当前频道的索引
+      channels: []// 频道列表
     }
   },
   computed: {
+    /**
+     * @return {object} 当前频道
+     */
     currentChannel () {
       return this.channels[this.active]
     }
   },
   methods: {
-
+    /**
+     * 下拉刷新事件
+     */
+    async onRefresh () {
+      // 记录所下拉的频道
+      const channel = this.currentChannel
+      /**
+       * 获取频道对应文章数据
+       */
+      let { data } = await getAllArticles({
+        channel_id: this.active,
+        timestamp: Date.now(),
+        with_top: 1
+      })
+      const { results } = data.data
+      channel.list.unshift(...results)
+      channel.isLoading = false
+      /**
+       * 判断当前频道是否还是之前的频道若是这会提示加载完成,否则不会提示
+       */
+      if (channel.id === this.currentChannel.id) {
+        this.$toast('加载完成')
+      }
+    },
     /**
      * 获得频道列表
      */
     async getChannelsList () {
       let { data } = await getChannels()
       data.data.channels.forEach(channel => {
-        channel.list = []
-        channel.loading = false
-        channel.finished = false
-        channel.pre_timestamp = null
+        channel.list = [] // 每个频道的数据列表
+        channel.loading = false// 每个频道的上滑加载状态
+        channel.finished = false// 每个频道的数据是否加载完成状态
+        channel.pre_timestamp = null // 每个频道记录的上一次请求返回的时间戳
+        channel.isLoading = true// 每个频道下拉加载状态
       })
       this.channels = data.data.channels
     },

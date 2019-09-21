@@ -22,7 +22,8 @@ import {
   List,
   Grid,
   GridItem,
-  Image
+  Image,
+  PullRefresh
 } from 'vant'
 Vue.use(Component)
 Vue.config.productionTip = false
@@ -42,6 +43,7 @@ Vue.use(Button)
   .use(Grid)
   .use(GridItem)
   .use(Image)
+  .use(PullRefresh)
 new Vue({
   router,
   store,
