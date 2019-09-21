@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import './style/index.less'
 import Component from './components'
-
+import { relativeTime } from './utils/date'
 // 按需注册button组件
 import {
   Button,
@@ -44,6 +44,8 @@ Vue.use(Button)
   .use(GridItem)
   .use(Image)
   .use(PullRefresh)
+
+Vue.filter('relativeTime', relativeTime)
 new Vue({
   router,
   store,

@@ -20,7 +20,11 @@
                   <van-image :src="img" />
                 </van-grid-item>
               </van-grid>
-              <span>{{item.pubdate}}</span>
+              <div class="article-info">
+                <span>{{item.aut_name}}</span>
+                <span>{{item.comm_count}}评论</span>
+                <span>{{item.pubdate | relativeTime}}</span>
+              </div>
             </template>
           </van-cell>
         </van-list>
@@ -129,4 +133,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.article-info{
+  span{
+    margin: 3px 5px;
+  }
+}
 </style>
