@@ -19,7 +19,10 @@ import {
   Search,
   Tab,
   Tabs,
-  List
+  List,
+  Grid,
+  GridItem,
+  Image
 } from 'vant'
 Vue.use(Component)
 Vue.config.productionTip = false
@@ -36,6 +39,9 @@ Vue.use(Button)
   .use(Tab)
   .use(Tabs)
   .use(List)
+  .use(Grid)
+  .use(GridItem)
+  .use(Image)
 new Vue({
   router,
   store,

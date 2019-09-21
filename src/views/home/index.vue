@@ -13,7 +13,16 @@
             v-for="item in currentChannel.list"
             :key="item.art_id.toString()"
             :title="item.title"
-          />
+          >
+            <template slot="label">
+              <van-grid :border="false" :column-num="item.cover.images.length">
+                <van-grid-item v-for="(img,index) in item.cover.images" :key="index">
+                  <van-image :src="img" />
+                </van-grid-item>
+              </van-grid>
+              <span>{{item.pubdate}}</span>
+            </template>
+          </van-cell>
         </van-list>
       </van-tab>
     </van-tabs>
@@ -55,7 +64,9 @@ export default {
      * list拉取数据
      */
     async onLoad () {
-      // 获取每个频道的对象
+      /**
+       * 获取每个频道的对象
+       */
       let channel = this.currentChannel
       // 异步更新数据
       /**
