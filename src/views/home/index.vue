@@ -102,10 +102,10 @@ export default {
     remainingChannels () {
       let remainChannelsList = []
       this.allChannels.forEach(channel => {
-        let index = this.channels.findIndex(item => item === channel)
-
+        let index = this.channels.findIndex(item => item.id === channel.id)
         if (index === -1) {
           remainChannelsList.push(channel)
+          // console.log(channel)
         }
       })
 

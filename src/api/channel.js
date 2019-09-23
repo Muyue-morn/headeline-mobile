@@ -2,7 +2,7 @@
  * @Author: advance.YiYunmu
  * @Date: 2019-09-20 21:13:08
  * @Last Modified by: advance.YiYunmu
- * @Last Modified time: 2019-09-23 20:47:04
+ * @Last Modified time: 2019-09-23 20:54:26
  * 频道相关接口
  */
 import { createAPI } from '@/utils/request'
@@ -28,4 +28,4 @@ export const getUserOrDefualtChannels = data => createAPI('/app/v1_0/user/channe
  *  seq: 顺序序号
  * }
  */
-export const resetUserChannels = data => createAPI('/app/v1_0/user/channels', 'PUT', data)
+export const resetUserChannels = data => createAPI('/app/v1_0/user/channels', 'put', data)
