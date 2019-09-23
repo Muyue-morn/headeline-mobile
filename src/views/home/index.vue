@@ -47,11 +47,24 @@
       <!-- 我的频道 -->
       <van-cell-group style="padding-top:30px" :border="false">
         <van-cell title="我的频道">
-          <van-button type="danger" size="mini" round plain>编辑</van-button>
+          <van-button
+            type="danger"
+            size="mini"
+            round
+            plain
+            @click="editMychannels = !editMychannels"
+          >{{editMychannels ? '完成':'编辑'}}</van-button>
         </van-cell>
       </van-cell-group>
       <van-grid :gutter="10" class="mychannel" :border="false">
-        <van-grid-item v-for="channel in channels" :key="channel.id" :text="channel.name" />
+        <van-grid-item
+          v-for="(channel,index) in channels"
+          :key="channel.id"
+          :text="channel.name"
+          @click="deletOrToChannel(channel,index)"
+        >
+          <van-icon name="clear" slot="icon" class="closeIcon" v-show="editMychannels" />
+        </van-grid-item>
       </van-grid>
 
       <!-- 推荐频道 -->
@@ -79,6 +92,7 @@ export default {
   name: 'HomeIndex',
   data () {
     return {
+      editMychannels: false, // 编辑我的频道
       allChannels: [], // 所有的频道信息列表
       isChannelEditShow: true, // 频道编辑弹窗
       active: 0, // 当前频道的索引
@@ -113,6 +127,19 @@ export default {
     }
   },
   methods: {
+    deletOrToChannel (channel, index) {
+      if (this.editMychannels) {
+        this.channels.splice(index, 1)
+        if (this.user) {
+
+        } else {
+          setItem('channels', this.channels)
+        }
+      } else {
+        this.active = index
+        this.isChannelEditShow = false
+      }
+    },
     /**
      * @param {object} channel =>添加的频道信息对象
      * 向我的频道添加新的频道
@@ -278,8 +305,16 @@ export default {
 /deep/.van-grid-item__text {
   color: #000;
 }
-.mychannel /deep/.van-grid-item__content {
-  background-color: #aaa;
-  border-radius: 15%;
+.mychannel {
+  /deep/.van-grid-item__content {
+    background-color: #aaa;
+    border-radius: 15%;
+  }
+  .closeIcon {
+    position: absolute;
+    top: -5px;
+    right: 5px;
+    color: #000;
+  }
 }
 </style>

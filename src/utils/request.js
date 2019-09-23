@@ -2,7 +2,7 @@
  * @Author: advance.YiYunmu
  * @Date: 2019-09-18 16:20:37
  * @Last Modified by: advance.YiYunmu
- * @Last Modified time: 2019-09-23 20:39:27
+ * @Last Modified time: 2019-09-23 21:23:14
  * 请求函数封装
  */
 
@@ -51,7 +51,7 @@ request.defaults.transformResponse = [function (data) {
  * 创建接口函数
  */
 
-export const createAPI = (url, method, data) => {
+export const createAPI = (url, method, data = null) => {
   // console.log(store.state.user)
   let config = {}
   // 如果没有传递参数则把data设置为null而不是默认的undefined
