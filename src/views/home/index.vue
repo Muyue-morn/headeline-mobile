@@ -45,27 +45,28 @@
       :style="{ height: '95%' }"
     >
       <!-- 我的频道 -->
-      <van-cell-group style="padding-top:30px">
+      <van-cell-group style="padding-top:30px" :border="false">
         <van-cell title="我的频道">
           <van-button type="danger" size="mini" round plain>编辑</van-button>
         </van-cell>
       </van-cell-group>
-      <van-grid :gutter="10">
-        <van-grid-item v-for="value in 8" :key="value" text="文字" />
+      <van-grid :gutter="10" class="mychannel" :border="false">
+        <van-grid-item v-for="channel in channels" :key="channel.id" :text="channel.name" />
       </van-grid>
+
       <!-- 推荐频道 -->
-      <van-cell-group style="padding-top:30px">
+      <van-cell-group style="padding-top:30px" :border="false">
         <van-cell title="推荐频道" />
       </van-cell-group>
-      <van-grid :gutter="10">
-        <van-grid-item v-for="value in 8" :key="value" text="文字" />
+      <van-grid :gutter="10" :border="false" class="remainchannel" >
+        <van-grid-item  v-for="channel in remainingChannels" :key="channel.id" :text="channel.name" />
       </van-grid>
     </van-popup>
   </van-tabs>
 </template>
 
 <script>
-import { getUserOrDefualtChannels } from '@/api/channel'
+import { getUserOrDefualtChannels, getAllChannels } from '@/api/channel'
 import { getAllArticles } from '@/api/articles'
 import { mapState } from 'vuex'
 import { getItem } from '@/store/storage'
@@ -73,6 +74,7 @@ export default {
   name: 'HomeIndex',
   data () {
     return {
+      allChannels: [], // 所有的频道信息列表
       isChannelEditShow: true, // 频道编辑弹窗
       active: 0, // 当前频道的索引
       channels: []// 频道列表
@@ -85,9 +87,43 @@ export default {
     currentChannel () {
       return this.channels[this.active]
     },
-    ...mapState(['user'])
+    /**
+     * 映射到此组件的user对象存储着token
+     */
+    ...mapState(['user']),
+    /**
+     * @return {object[]} 除去我的频道后剩余的频道数组
+     */
+    remainingChannels () {
+      let remainChannelsList = []
+      this.allChannels.forEach(channel => {
+        let index = this.channels.findIndex(item => item === channel)
+
+        if (index === -1) {
+          remainChannelsList.push(channel)
+        }
+      })
+
+      return remainChannelsList
+    }
   },
   methods: {
+    /**
+     * 获得所有的频道信息
+     */
+    async getAllChannelsList () {
+      let { data } = await getAllChannels()
+      let channels = data.data.channels
+      channels.forEach(channel => {
+        channel.list = [] // 每个频道的数据列表
+        channel.loading = false// 每个频道的上滑加载状态
+        channel.finished = false// 每个频道的数据是否加载完成状态
+        channel.pre_timestamp = null // 每个频道记录的上一次请求返回的时间戳
+        channel.isLoading = true// 每个频道下拉加载状态
+      })
+      // console.log(channels)
+      this.allChannels = channels
+    },
     /**
      * 下拉刷新事件
      */
@@ -113,13 +149,13 @@ export default {
       }
     },
     /**
-     * 获得频道列表
+     * 获得用户或者默认频道列表
      */
     async getChannelsList () {
       let channels = []
       if (this.user) {
         // 用户登录了获取用户频道数据
-        console.log(123)
+        // console.log(123)
         let { data } = await getUserOrDefualtChannels()
         channels = data.data.channels
       } else {
@@ -177,6 +213,7 @@ export default {
     }
   },
   created () {
+    this.getAllChannelsList()
     this.getChannelsList()
   }
 
@@ -206,5 +243,16 @@ export default {
 }
 /deep/.van-popup__close-icon {
   left: 16px;
+}
+.remainchannel /deep/.van-grid-item__content{
+  background-color: #ccc;
+  border-radius: 15%;
+}
+/deep/.van-grid-item__text{
+  color: #000;
+}
+.mychannel /deep/.van-grid-item__content{
+  background-color: #aaa;
+  border-radius: 15%;
 }
 </style>
