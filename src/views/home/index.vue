@@ -84,7 +84,12 @@
 </template>
 
 <script>
-import { getUserOrDefualtChannels, getAllChannels, resetUserChannels } from '@/api/channel'
+import {
+  getUserOrDefualtChannels,
+  getAllChannels,
+  resetUserChannels,
+  deletUserChannels
+} from '@/api/channel'
 import { getAllArticles } from '@/api/articles'
 import { mapState } from 'vuex'
 import { getItem, setItem } from '@/store/storage'
@@ -127,11 +132,15 @@ export default {
     }
   },
   methods: {
-    deletOrToChannel (channel, index) {
+    /**
+     * @param channel 点击的频道信息，为了获取id实现物理删除
+     * @param index 点击的频道所在的下标，方便逻辑删除
+     */
+    async deletOrToChannel (channel, index) {
       if (this.editMychannels) {
         this.channels.splice(index, 1)
         if (this.user) {
-
+          await deletUserChannels(channel.id)
         } else {
           setItem('channels', this.channels)
         }
