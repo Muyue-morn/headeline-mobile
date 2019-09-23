@@ -58,18 +58,23 @@
       <van-cell-group style="padding-top:30px" :border="false">
         <van-cell title="推荐频道" />
       </van-cell-group>
-      <van-grid :gutter="10" :border="false" class="remainchannel" >
-        <van-grid-item  v-for="channel in remainingChannels" :key="channel.id" :text="channel.name" />
+      <van-grid :gutter="10" :border="false" class="remainchannel">
+        <van-grid-item
+          @click="addToMychannel(channel)"
+          v-for="channel in remainingChannels"
+          :key="channel.id"
+          :text="channel.name"
+        />
       </van-grid>
     </van-popup>
   </van-tabs>
 </template>
 
 <script>
-import { getUserOrDefualtChannels, getAllChannels } from '@/api/channel'
+import { getUserOrDefualtChannels, getAllChannels, resetUserChannels } from '@/api/channel'
 import { getAllArticles } from '@/api/articles'
 import { mapState } from 'vuex'
-import { getItem } from '@/store/storage'
+import { getItem, setItem } from '@/store/storage'
 export default {
   name: 'HomeIndex',
   data () {
@@ -108,6 +113,28 @@ export default {
     }
   },
   methods: {
+    /**
+     * @param {object} channel =>添加的频道信息对象
+     * 向我的频道添加新的频道
+     */
+    async addToMychannel (channel) {
+      this.channels.push(channel)
+      /**
+       * 如果登录了则存到服务器上否则存到本地中
+       */
+      if (this.user) {
+        let channels = []
+        this.channels.slice(1).forEach((item, index) => {
+          channels.push({
+            id: item.id,
+            seq: index + 2
+          })
+        })
+        await resetUserChannels({ channels })
+      } else {
+        setItem('channels', this.channels)
+      }
+    },
     /**
      * 获得所有的频道信息
      */
@@ -244,14 +271,14 @@ export default {
 /deep/.van-popup__close-icon {
   left: 16px;
 }
-.remainchannel /deep/.van-grid-item__content{
+.remainchannel /deep/.van-grid-item__content {
   background-color: #ccc;
   border-radius: 15%;
 }
-/deep/.van-grid-item__text{
+/deep/.van-grid-item__text {
   color: #000;
 }
-.mychannel /deep/.van-grid-item__content{
+.mychannel /deep/.van-grid-item__content {
   background-color: #aaa;
   border-radius: 15%;
 }
