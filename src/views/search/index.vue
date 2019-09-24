@@ -8,13 +8,18 @@
       shape="round"
       style="padding:5px"
       show-action
-      @search="onSearch"
+      @search="onSearch(searchText)"
       @cancel="onCancel"
     />
     <!-- 联想搜索 -->
     <van-cell-group>
-      <van-cell icon="search" v-for="item in suggestionSearchList" :key="item" :title="item">
-        <!-- <div slot="title">{{ item }}</div> -->
+      <van-cell
+        icon="search"
+        v-for="(item, index) in suggestionSearchList"
+        :key="index"
+        @click="onSearch(item)"
+      >
+        <div slot="title" v-html="heightLineSearch(item, index)"></div>
       </van-cell>
     </van-cell-group>
     <!-- 历史记录 -->
@@ -22,10 +27,18 @@
       <van-cell title="历史记录">
         <span style="margin-right: 10px;">全部删除</span>
         <span>完成</span>
-        <van-icon slot="right-icon" name="delete" style="line-height: inherit;" />
+        <van-icon
+          slot="right-icon"
+          name="delete"
+          style="line-height: inherit;"
+        />
       </van-cell>
       <van-cell title="hello" v-for="value in 5" :key="value">
-        <van-icon slot="right-icon" name="close" style="line-height: inherit;" />
+        <van-icon
+          slot="right-icon"
+          name="close"
+          style="line-height: inherit;"
+        />
       </van-cell>
     </van-cell-group>
   </div>
@@ -43,8 +56,22 @@ export default {
     }
   },
   methods: {
-    onSearch () { },
-    onCancel () { }
+    onSearch (searchText) {
+      this.$router.push({
+        name: 'searchResult',
+        params: {
+          searchText
+        }
+      })
+    },
+    onCancel () { },
+    heightLineSearch (str, index) {
+      const reg = new RegExp(`(${this.searchText})`, 'gi')
+      return this.suggestionSearchList[index].replace(
+        reg,
+        '<span style="color: red;">$1</span>'
+      )
+    }
   },
   watch: {
     async searchText (newVal) {
