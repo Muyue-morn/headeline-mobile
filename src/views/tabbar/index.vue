@@ -34,6 +34,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * 跳转到搜索界面
+     */
     ToSearch () {
       this.$router.push('/search')
     }
