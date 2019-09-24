@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-nav-bar title="搜索结果" fixed />
+    <van-nav-bar title="搜索结果" left-arrow fixed  @click-left="$router.back()"/>
     <van-list
       v-model="isLoading"
       :finished="isFinished"
@@ -30,6 +30,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * 加载数据
+     */
     async onLoad () {
       // 异步更新数据
       let { data } = await getSearchResults({
@@ -55,4 +58,8 @@ export default {
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+/deep/.van-nav-bar .van-icon{
+  color: #fff
+}
+</style>

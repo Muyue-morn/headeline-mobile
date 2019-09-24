@@ -12,7 +12,7 @@
       @cancel="onCancel"
     />
     <!-- 联想搜索 -->
-    <van-cell-group>
+    <van-cell-group v-show="suggestionSearchList.length">
       <van-cell
         icon="search"
         v-for="(item, index) in suggestionSearchList"
@@ -23,7 +23,7 @@
       </van-cell>
     </van-cell-group>
     <!-- 历史记录 -->
-    <van-cell-group>
+    <van-cell-group v-show="!suggestionSearchList.length">
       <van-cell title="历史记录">
         <!-- 控制删除元素的按钮图标 -->
         <van-icon
@@ -45,6 +45,7 @@
         :title="value"
         v-for="(value, index) in searchHistoryList"
         :key="index"
+        @click="onSearch(value)"
       >
         <!-- 每条记录的删除按钮图标 -->
         <van-icon
@@ -131,12 +132,12 @@ export default {
       /**
        * 路由跳转搜索结果
        */
-      // this.$router.push({
-      //   name: 'searchResult',
-      //   params: {
-      //     searchText
-      //   }
-      // })
+      this.$router.push({
+        name: 'searchResult',
+        params: {
+          searchText
+        }
+      })
     },
     onCancel () { },
     /**
@@ -156,7 +157,7 @@ export default {
       async handler (newVal) {
         // console.log(newVal.length)
         if (!newVal.length) {
-          this.suggestionSearchList = null
+          this.suggestionSearchList = []
         } else {
           const { data } = await getSearchSuggestion({ q: newVal })
           this.suggestionSearchList = data.data.options
