@@ -25,6 +25,7 @@
     <!-- 历史记录 -->
     <van-cell-group>
       <van-cell title="历史记录">
+        <!-- 控制删除元素的按钮图标 -->
         <van-icon
           slot="right-icon"
           name="delete"
@@ -33,16 +34,25 @@
           @click="isDeletIcon = !isDeletIcon"
         />
         <template v-else>
-          <span style="margin-right: 10px;">全部删除</span>
+          <!-- 删除界面按钮 -->
+          <span style="margin-right: 10px;" @click="deletAllRecord"
+            >全部删除</span
+          >
           <span @click="isDeletIcon = !isDeletIcon">完成</span>
         </template>
       </van-cell>
-      <van-cell title="hello" v-for="value in 5" :key="value">
+      <van-cell
+        :title="value"
+        v-for="(value, index) in searchHistoryList"
+        :key="index"
+      >
+        <!-- 每条记录的删除按钮图标 -->
         <van-icon
           slot="right-icon"
           name="close"
           style="line-height: inherit;"
           v-show="!isDeletIcon"
+          @click="deletThisRecord(index)"
         />
       </van-cell>
     </van-cell-group>
@@ -51,27 +61,82 @@
 
 <script>
 import { getSearchSuggestion } from '@/api/search'
+import { mapState } from 'vuex'
+import { setItem, getItem } from '@/store/storage'
 
 export default {
   name: 'SearchIndex',
   data () {
     return {
+      searchHistoryList: getItem('searchHistoryList'), // 搜索历史记录列表
       isDeletIcon: true, // 删除图标的显示与否
       searchText: '', // 搜索关键字
       suggestionSearchList: [] // 搜索联想建议列表
     }
   },
+  computed: {
+    ...mapState(['user'])
+  },
+  created () {
+
+  },
   methods: {
+    /**
+     * 删除所有历史搜索记录
+     */
+    deletAllRecord () {
+      this.searchHistoryList.splice(0, this.searchHistoryList.length)
+      if (this.user) {
+
+      } else {
+        setItem('searchHistoryList', this.searchHistoryList)
+      }
+    },
+    /**
+     * 删除单条历史搜索记录
+     * @param {number} index =>本条记录在历史记录中的下标
+     */
+    deletThisRecord (index) {
+      this.searchHistoryList.splice(index, 1)
+      if (this.user) {
+
+      } else {
+        setItem('searchHistoryList', this.searchHistoryList)
+      }
+    },
     /**
      * @param {string} searchText =>搜索条件，也是传递的参数
      */
     onSearch (searchText) {
-      this.$router.push({
-        name: 'searchResult',
-        params: {
-          searchText
-        }
-      })
+      let nowSearchText = searchText.trim().toLowerCase()
+      let index = this.searchHistoryList.findIndex(
+        item => item.trim().toLowerCase() === nowSearchText)
+      /**
+       * 1.历史记录中找不到就添加新的历史记录
+       * 2.历史记录找到了则删除原有的记录
+       * 3.最后把本次的插入到最前面达成记录提前的效果
+       */
+      index !== -1 && this.searchHistoryList.splice(index, 1)
+      this.searchHistoryList.unshift(searchText)
+      if (this.user) {
+        /**
+         * 登录则存储在后台服务器中
+         */
+      } else {
+        /**
+         * 没有登录历史搜索记录存储在本地中
+         */
+        setItem('searchHistoryList', this.searchHistoryList)
+      }
+      /**
+       * 路由跳转搜索结果
+       */
+      // this.$router.push({
+      //   name: 'searchResult',
+      //   params: {
+      //     searchText
+      //   }
+      // })
     },
     onCancel () { },
     /**
