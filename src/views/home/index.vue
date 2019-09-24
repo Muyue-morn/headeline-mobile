@@ -99,7 +99,7 @@ export default {
     return {
       editMychannels: false, // 编辑我的频道
       allChannels: [], // 所有的频道信息列表
-      isChannelEditShow: true, // 频道编辑弹窗
+      isChannelEditShow: false, // 频道编辑弹窗
       active: 0, // 当前频道的索引
       channels: []// 频道列表
     }

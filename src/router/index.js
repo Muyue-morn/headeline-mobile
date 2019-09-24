@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '@/views/login'
 import Tababr from '@/views/tabbar'
 import Home from '@/views/home'
+import Search from '@/views/search'
 
 Vue.use(Router)
 
@@ -21,6 +22,7 @@ export default new Router({
       children: [
         { path: '', name: 'home', component: Home } // 主页
       ]
-    }
+    },
+    { path: '/search', name: 'search', component: Search } // 搜索界面
   ]
 })

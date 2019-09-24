@@ -10,7 +10,7 @@ const mutations = {
   saveToken (state, user) {
     state.user = user
     setItem('user', user)
-    console.log(user)
+    // console.log(user)
   }
 }
 const actions = {
