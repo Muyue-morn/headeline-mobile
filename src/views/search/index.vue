@@ -64,6 +64,7 @@
 import { getSearchSuggestion } from '@/api/search'
 import { mapState } from 'vuex'
 import { setItem, getItem } from '@/store/storage'
+import { debounce } from 'lodash'
 
 export default {
   name: 'SearchIndex',
@@ -154,7 +155,7 @@ export default {
      * 监听搜索条件的变化，进而发送请求
      */
     searchText: {
-      async handler (newVal) {
+      handler: debounce(async function (newVal) {
         // console.log(newVal.length)
         if (!newVal.length) {
           this.suggestionSearchList = []
@@ -162,7 +163,7 @@ export default {
           const { data } = await getSearchSuggestion({ q: newVal })
           this.suggestionSearchList = data.data.options
         }
-      },
+      }, 300),
       immediate: true
     }
   }
