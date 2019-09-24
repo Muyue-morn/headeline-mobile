@@ -25,6 +25,13 @@ export default new Router({
       ]
     },
     { path: '/search', name: 'search', component: Search }, // 搜索界面
-    { path: '/search/:searchText', name: 'searchResult', component: SearchResult }
+    /**
+     * 搜索结果页面
+     */
+    {
+      path: '/search/:searchText',
+      name: 'searchResult',
+      component: SearchResult
+    }
   ]
 })

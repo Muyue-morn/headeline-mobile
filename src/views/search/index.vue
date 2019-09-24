@@ -74,13 +74,17 @@ export default {
     }
   },
   watch: {
-    async searchText (newVal) {
-      if (!newVal.length) {
-        return null
-      } else {
-        const { data } = await getSearchSuggestion({ q: newVal })
-        this.suggestionSearchList = data.data.options
-      }
+    searchText: {
+      async handler (newVal) {
+        // console.log(newVal.length)
+        if (!newVal.length) {
+          this.suggestionSearchList = null
+        } else {
+          const { data } = await getSearchSuggestion({ q: newVal })
+          this.suggestionSearchList = data.data.options
+        }
+      },
+      immediate: true
     }
   }
 }
