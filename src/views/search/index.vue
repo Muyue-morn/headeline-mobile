@@ -25,19 +25,24 @@
     <!-- 历史记录 -->
     <van-cell-group>
       <van-cell title="历史记录">
-        <span style="margin-right: 10px;">全部删除</span>
-        <span>完成</span>
         <van-icon
           slot="right-icon"
           name="delete"
           style="line-height: inherit;"
+          v-if="isDeletIcon"
+          @click="isDeletIcon = !isDeletIcon"
         />
+        <template v-else>
+          <span style="margin-right: 10px;">全部删除</span>
+          <span @click="isDeletIcon = !isDeletIcon">完成</span>
+        </template>
       </van-cell>
       <van-cell title="hello" v-for="value in 5" :key="value">
         <van-icon
           slot="right-icon"
           name="close"
           style="line-height: inherit;"
+          v-show="!isDeletIcon"
         />
       </van-cell>
     </van-cell-group>
@@ -51,11 +56,15 @@ export default {
   name: 'SearchIndex',
   data () {
     return {
-      searchText: '',
-      suggestionSearchList: []
+      isDeletIcon: true, // 删除图标的显示与否
+      searchText: '', // 搜索关键字
+      suggestionSearchList: [] // 搜索联想建议列表
     }
   },
   methods: {
+    /**
+     * @param {string} searchText =>搜索条件，也是传递的参数
+     */
     onSearch (searchText) {
       this.$router.push({
         name: 'searchResult',
@@ -65,15 +74,19 @@ export default {
       })
     },
     onCancel () { },
-    heightLineSearch (str, index) {
+    /**
+     * @param {string} str =>含有高亮关键字的字符串
+     * 搜索关键字高亮实现
+     */
+    heightLineSearch (str) {
       const reg = new RegExp(`(${this.searchText})`, 'gi')
-      return this.suggestionSearchList[index].replace(
-        reg,
-        '<span style="color: red;">$1</span>'
-      )
+      return str.replace(reg, '<span style="color: red;">$1</span>')
     }
   },
   watch: {
+    /**
+     * 监听搜索条件的变化，进而发送请求
+     */
     searchText: {
       async handler (newVal) {
         // console.log(newVal.length)
