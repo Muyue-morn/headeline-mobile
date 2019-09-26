@@ -1,16 +1,18 @@
 <template>
   <div>
     <!-- 头部标题栏 -->
-    <van-search
-      v-model="searchText"
-      placeholder="请输入搜索关键词"
-      slot="title"
-      shape="round"
-      style="padding:5px"
-      show-action
-      @search="onSearch(searchText)"
-      @cancel="onCancel"
-    />
+    <form action="/">
+      <van-search
+        v-model="searchText"
+        placeholder="请输入搜索关键词"
+        slot="title"
+        shape="round"
+        style="padding:5px"
+        show-action
+        @search="onSearch(searchText)"
+        @cancel="onCancel"
+      />
+    </form>
     <!-- 联想搜索 -->
     <van-cell-group v-show="suggestionSearchList.length">
       <van-cell
@@ -70,7 +72,7 @@ export default {
   name: 'SearchIndex',
   data () {
     return {
-      searchHistoryList: getItem('searchHistoryList'), // 搜索历史记录列表
+      searchHistoryList: getItem('searchHistoryList') || [], // 搜索历史记录列表
       isDeletIcon: true, // 删除图标的显示与否
       searchText: '', // 搜索关键字
       suggestionSearchList: [] // 搜索联想建议列表
