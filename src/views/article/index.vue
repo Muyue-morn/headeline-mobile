@@ -34,7 +34,9 @@
           class="followBtn"
           @click="changeState(articleDetialMsg.aut_id)"
         >
-          &emsp;{{articleDetialMsg.is_followed ? '取消关注' : '十 关注'}}&emsp;
+          &emsp;{{
+            articleDetialMsg.is_followed ? '取消关注' : '十 关注'
+          }}&emsp;
         </van-button>
       </div>
       <div class="articleContent" v-html="articleDetialMsg.content"></div>
@@ -43,17 +45,20 @@
           class="btn"
           round
           size="small"
-          type="default"
+          :type="articleDetialMsg.attitude === 1 ? 'primary' : 'default'"
           icon="good-job-o"
-          >点赞</van-button
+          @click="changeLikeState(articleDetialMsg.art_id.toString())"
+          >{{
+            articleDetialMsg.attitude === 1 ? '取消点赞' : '点赞'
+          }}</van-button
         >
         <van-button
           class="btn"
           round
           size="small"
-          type="primary"
-          plain
+          :type="articleDetialMsg.attitude === 0 ? 'primary' : 'default'"
           icon="cross"
+          @click="changeDislikeState(articleDetialMsg.art_id.toString())"
           >不喜欢</van-button
         >
       </div>
@@ -69,7 +74,15 @@
 </template>
 
 <script>
-import { getArticleDetial, followUser, unFollowUser } from '@/api/article'
+import {
+  getArticleDetial,
+  followUser,
+  unFollowUser,
+  unLikeArticle,
+  likeArticle,
+  unDislikeArticle,
+  dislikeArticle
+} from '@/api/article'
 export default {
   name: 'ArticleIndex',
   data () {
@@ -79,6 +92,40 @@ export default {
     }
   },
   methods: {
+    /**
+     * 改变对文章的不喜欢状态
+     * @param {string} target =>文章id
+     */
+    async changeDislikeState (articleId) {
+      if (this.articleDetialMsg.attitude === 0) {
+        // 已不喜欢的取消不喜欢
+        await unDislikeArticle(articleId)
+        this.articleDetialMsg.attitude = -1
+      } else {
+        // 未不喜欢的，点击则不喜欢
+        await dislikeArticle({ target: articleId })
+        this.articleDetialMsg.attitude = 0
+      }
+    },
+    /**
+     * 改变对文章的点赞状态
+     * @param {string} target =>文章id
+     */
+    async changeLikeState (articleId) {
+      if (this.articleDetialMsg.attitude === 1) {
+        // 已点赞的取消点赞
+        await unLikeArticle(articleId)
+        this.articleDetialMsg.attitude = -1
+      } else {
+        // 未点赞的，点击点赞
+        await likeArticle({ target: articleId })
+        this.articleDetialMsg.attitude = 1
+      }
+    },
+    /**
+     * 修改关注状态
+     * @param {number} target =>用户id
+     */
     async changeState (target) {
       if (this.articleDetialMsg.is_followed) {
         // 关注了，点击则取消关注
