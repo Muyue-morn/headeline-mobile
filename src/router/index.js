@@ -32,6 +32,14 @@ export default new Router({
       path: '/search/:searchText',
       name: 'searchResult',
       component: SearchResult
+    },
+    /**
+     * 文章详情列表
+     */
+    {
+      path: '/article',
+      name: 'article',
+      component: () => import('../views/article')
     }
   ]
 })

@@ -1,6 +1,11 @@
 <template>
   <div>
-    <van-nav-bar title="搜索结果" left-arrow fixed  @click-left="$router.back()"/>
+    <van-nav-bar
+      title="搜索结果"
+      left-arrow
+      fixed
+      @click-left="$router.back()"
+    />
     <van-list
       v-model="isLoading"
       :finished="isFinished"
@@ -8,7 +13,11 @@
       @load="onLoad"
       style="margin-top:46px"
     >
-      <van-cell v-for="item in searchResultsList" :key="item.art_id" :title="item.title" />
+      <van-cell
+        v-for="item in searchResultsList"
+        :key="item.art_id"
+        :title="item.title"
+      />
     </van-list>
   </div>
 </template>
@@ -59,7 +68,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/.van-nav-bar .van-icon{
-  color: #fff
-}
+
 </style>
