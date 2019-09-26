@@ -6,44 +6,55 @@
       fixed
       @click-left="$router.back()"
     />
-    <div class="articleTitle">
-      <h2>{{ articleDetialMsg.title }}</h2>
-    </div>
-    <div class="articleUserInfo">
-      <van-image
-        :src="articleDetialMsg.aut_photo"
-        round
-        type="cover"
-        width="3rem"
-        height="3rem"
-      />
-      <div class="nameTime">
-        <span class="name">{{ articleDetialMsg.aut_name }}</span>
-        <span class="time">{{ articleDetialMsg.pubdate | relativeTime }}</span>
+    <van-loading class="article-loading" size="24px" v-if="loading"
+      >加载中...</van-loading
+    >
+    <template v-else-if="articleDetialMsg.title">
+      <div class="articleTitle">
+        <h2>{{ articleDetialMsg.title }}</h2>
       </div>
-      <van-button round type="info" size="small" class="followBtn">
-        &emsp;十&nbsp;关注&emsp;
-      </van-button>
-    </div>
-    <div class="articleContent" v-html="articleDetialMsg.content"></div>
-    <div class="twobutton">
-      <van-button
-        class="btn"
-        round
-        size="small"
-        type="default"
-        icon="good-job-o"
-        >点赞</van-button
-      >
-      <van-button
-        class="btn"
-        round
-        size="small"
-        type="primary"
-        plain
-        icon="cross"
-        >不喜欢</van-button
-      >
+      <div class="articleUserInfo">
+        <van-image
+          :src="articleDetialMsg.aut_photo"
+          round
+          type="cover"
+          width="3rem"
+          height="3rem"
+        />
+        <div class="nameTime">
+          <span class="name">{{ articleDetialMsg.aut_name }}</span>
+          <span class="time">{{
+            articleDetialMsg.pubdate | relativeTime
+          }}</span>
+        </div>
+        <van-button round type="info" size="small" class="followBtn">
+          &emsp;十&nbsp;关注&emsp;
+        </van-button>
+      </div>
+      <div class="articleContent" v-html="articleDetialMsg.content"></div>
+      <div class="twobutton">
+        <van-button
+          class="btn"
+          round
+          size="small"
+          type="default"
+          icon="good-job-o"
+          >点赞</van-button
+        >
+        <van-button
+          class="btn"
+          round
+          size="small"
+          type="primary"
+          plain
+          icon="cross"
+          >不喜欢</van-button
+        >
+      </div>
+    </template>
+
+    <div class="error" v-else>
+      <p>网络超时，点击 <a href="#" @click.prevent="getThisArticleDetial()">刷新</a> 试一试。</p>
     </div>
   </div>
 </template>
@@ -54,7 +65,8 @@ export default {
   name: 'ArticleIndex',
   data () {
     return {
-      articleDetialMsg: {}
+      loading: true, // 加载状态
+      articleDetialMsg: {}// 文章详细信息
     }
   },
   methods: {
@@ -62,9 +74,14 @@ export default {
      * 获取文章详情信息
      */
     async getThisArticleDetial () {
-      let { data } = await getArticleDetial(this.$route.params.articleId)
-      console.log(data)
-      this.articleDetialMsg = data.data
+      try {
+        let { data } = await getArticleDetial(this.$route.params.articleId)
+        // console.log(data)
+        this.articleDetialMsg = data.data
+      } catch (e) {
+        console.log(e)
+      }
+      this.loading = false
     }
   },
   created () {
@@ -75,9 +92,18 @@ export default {
 
 <style lang="less" scoped>
 .articleDetial {
-  .articleTitle {
+  .article-loading {
+    padding-top: 100px;
     text-align: center;
     margin-top: 46px;
+  }
+  .error {
+    padding-top: 100px;
+    text-align: center;
+  }
+  .articleTitle {
+    margin-top: 46px;
+    text-align: center;
     h2 {
       font-weight: 600;
     }
@@ -107,6 +133,7 @@ export default {
     margin-top: 20px;
     padding: 0 20px;
     line-height: 25px;
+    width: 100%;
   }
   .twobutton {
     text-align: center;
