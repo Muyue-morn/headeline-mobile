@@ -27,8 +27,14 @@
             articleDetialMsg.pubdate | relativeTime
           }}</span>
         </div>
-        <van-button round type="info" size="small" class="followBtn">
-          &emsp;十&nbsp;关注&emsp;
+        <van-button
+          round
+          type="info"
+          size="small"
+          class="followBtn"
+          @click="changeState(articleDetialMsg.aut_id)"
+        >
+          &emsp;{{articleDetialMsg.is_followed ? '取消关注' : '十 关注'}}&emsp;
         </van-button>
       </div>
       <div class="articleContent" v-html="articleDetialMsg.content"></div>
@@ -54,13 +60,16 @@
     </template>
 
     <div class="error" v-else>
-      <p>网络超时，点击 <a href="#" @click.prevent="getThisArticleDetial()">刷新</a> 试一试。</p>
+      <p>
+        网络超时，点击
+        <a href="#" @click.prevent="getThisArticleDetial()">刷新</a> 试一试。
+      </p>
     </div>
   </div>
 </template>
 
 <script>
-import { getArticleDetial } from '@/api/article'
+import { getArticleDetial, followUser, unFollowUser } from '@/api/article'
 export default {
   name: 'ArticleIndex',
   data () {
@@ -70,6 +79,16 @@ export default {
     }
   },
   methods: {
+    async changeState (target) {
+      if (this.articleDetialMsg.is_followed) {
+        // 关注了，点击则取消关注
+        await unFollowUser(target)
+      } else {
+        // 没有关注点击则关注
+        await followUser({ target })
+      }
+      this.articleDetialMsg.is_followed = !this.articleDetialMsg.is_followed
+    },
     /**
      * 获取文章详情信息
      */
