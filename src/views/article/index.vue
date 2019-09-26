@@ -7,37 +7,69 @@
       @click-left="$router.back()"
     />
     <div class="articleTitle">
-      <h2>爱丽丝肯德基</h2>
+      <h2>{{ articleDetialMsg.title }}</h2>
     </div>
     <div class="articleUserInfo">
       <van-image
-        src="https://img.yzcdn.cn/vant/cat.jpeg"
+        :src="articleDetialMsg.aut_photo"
         round
         type="cover"
         width="3rem"
         height="3rem"
       />
       <div class="nameTime">
-        <span class="name">拉三等奖</span>
-        <span class="time">2019.5.8</span>
+        <span class="name">{{ articleDetialMsg.aut_name }}</span>
+        <span class="time">{{ articleDetialMsg.pubdate | relativeTime }}</span>
       </div>
       <van-button round type="info" size="small" class="followBtn">
         &emsp;十&nbsp;关注&emsp;
       </van-button>
     </div>
-    <div class="articleContent">
-      阿克苏的将来及的垃圾垃圾垃圾啊连接登录打了大垃圾死垃圾打蜡看手机的了撒娇拉屎啦
-    </div>
+    <div class="articleContent" v-html="articleDetialMsg.content"></div>
     <div class="twobutton">
-      <van-button class="btn" round size="small" type="default" icon="good-job-o">点赞</van-button>
-      <van-button class="btn" round size="small" type="primary" plain icon="cross">不喜欢</van-button>
+      <van-button
+        class="btn"
+        round
+        size="small"
+        type="default"
+        icon="good-job-o"
+        >点赞</van-button
+      >
+      <van-button
+        class="btn"
+        round
+        size="small"
+        type="primary"
+        plain
+        icon="cross"
+        >不喜欢</van-button
+      >
     </div>
   </div>
 </template>
 
 <script>
+import { getArticleDetial } from '@/api/article'
 export default {
-  name: 'ArticleIndex'
+  name: 'ArticleIndex',
+  data () {
+    return {
+      articleDetialMsg: {}
+    }
+  },
+  methods: {
+    /**
+     * 获取文章详情信息
+     */
+    async getThisArticleDetial () {
+      let { data } = await getArticleDetial(this.$route.params.articleId)
+      console.log(data)
+      this.articleDetialMsg = data.data
+    }
+  },
+  created () {
+    this.getThisArticleDetial()
+  }
 }
 </script>
 
@@ -76,9 +108,9 @@ export default {
     padding: 0 20px;
     line-height: 25px;
   }
-  .twobutton{
+  .twobutton {
     text-align: center;
-    .btn{
+    .btn {
       margin: 20px;
       padding: 0px 25px;
     }

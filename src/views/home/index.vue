@@ -16,6 +16,7 @@
             v-for="item in currentChannel.list"
             :key="item.art_id.toString()"
             :title="item.title"
+            @click="toArticleDetial(item.art_id.toString())"
           >
             <template slot="label">
               <van-grid :border="false" :column-num="item.cover.images.length">
@@ -132,6 +133,18 @@ export default {
     }
   },
   methods: {
+    /**
+     * 携带文章id到该文章的详情页
+     * @param {string} articleId =>文章的id号
+     */
+    toArticleDetial (articleId) {
+      this.$router.push({
+        name: 'article',
+        params: {
+          articleId
+        }
+      })
+    },
     /**
      * @param channel 点击的频道信息，为了获取id实现物理删除
      * @param index 点击的频道所在的下标，方便逻辑删除

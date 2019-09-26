@@ -142,7 +142,9 @@ export default {
         }
       })
     },
-    onCancel () { },
+    onCancel () {
+      this.$router.back()
+    },
     /**
      * @param {string} str =>含有高亮关键字的字符串
      * 搜索关键字高亮实现
