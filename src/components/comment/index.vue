@@ -7,20 +7,20 @@
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <van-cell v-for="item in list" :key="item" :title="item">
+      <van-cell v-for="item in list" :key="item.com_id.toString()">
         <van-image
           slot="icon"
           round
           width="30"
           height="30"
           style="margin-right: 10px;"
-          src="https://img.yzcdn.cn/vant/cat.jpeg"
+          :src="item.aut_photo"
         />
-        <span style="color: #466b9d;" slot="title">hello</span>
+        <span style="color: #466b9d;" slot="title">{{item.aut_name}}</span>
         <div slot="label">
-          <p style="color: #363636;">我出去跟别人说我的是。。。</p>
+          <p style="color: #363636;">{{item.content}}</p>
           <p>
-            <span style="margin-right: 10px;">3天前</span>
+            <span style="margin-right: 10px;">{{item.pubdate | relativeTime}}</span>
             <van-button size="mini" type="default">回复</van-button>
           </p>
         </div>
@@ -40,30 +40,39 @@
 </template>
 
 <script>
+import { getArticleComments } from '@/api/comment'
+
 export default {
   name: 'CommentIndex',
+  props: ['articleId'],
   data () {
     return {
+      offset: null,
       list: [], // 评论列表
       loading: false, // 上拉加载更多的 loading
       finished: false // 是否加载结束
     }
   },
   methods: {
-    onLoad () {
+    async onLoad () {
       // 异步更新数据
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-        // 加载状态结束
-        this.loading = false
+      let { data } = await getArticleComments({
+        type: 'a',
+        source: this.articleId,
+        offset: this.offset,
+        limit: 50
+      })
+      let result = data.data.results
+      console.log(data.data)
+      this.list.push(...result)
+      this.offset = data.data.last_id
+      // 加载状态结束
+      this.loading = false
 
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true
-        }
-      }, 500)
+      // 数据全部加载完成
+      if (this.offset === null) {
+        this.finished = true
+      }
     }
   }
 }
@@ -74,7 +83,7 @@ export default {
   position: fixed;
   left: 0;
   bottom: 0;
-  width: 100%;
+  width: 100vw;
 }
 
 .van-list {
