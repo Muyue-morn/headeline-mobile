@@ -2,12 +2,13 @@
  * @Author: advance.YiYunmu
  * @Date: 2019-09-18 20:39:55
  * @Last Modified by: advance.YiYunmu
- * @Last Modified time: 2019-09-18 21:33:11
+ * @Last Modified time: 2019-09-26 21:19:43
  * 各个组件的注册
  */
 import { extend, ValidationProvider, ValidationObserver } from 'vee-validate' // 验证组件导入
 import * as rules from 'vee-validate/dist/rules' // 所有的验证规则
 import zhCN from 'vee-validate/dist/locale/zh_CN' // 提示消息语言包
+import Comment from './comment'
 
 // 遍历添加所有的规则
 for (let rule in rules) {
@@ -27,5 +28,6 @@ export default {
   install (Vue) {
     Vue.component('ValidationProvider', ValidationProvider) // 注册校验组件
     Vue.component('ValidationObserver', ValidationObserver) // 注册校验组件
+    Vue.component('comment-list', Comment) // 注册评论列表组件
   }
 }

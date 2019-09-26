@@ -70,6 +70,7 @@
         <a href="#" @click.prevent="getThisArticleDetial()">刷新</a> 试一试。
       </p>
     </div>
+    <comment-list></comment-list>
   </div>
 </template>
 
