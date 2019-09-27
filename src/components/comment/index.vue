@@ -16,11 +16,13 @@
           style="margin-right: 10px;"
           :src="item.aut_photo"
         />
-        <span style="color: #466b9d;" slot="title">{{item.aut_name}}</span>
+        <span style="color: #466b9d;" slot="title">{{ item.aut_name }}</span>
         <div slot="label">
-          <p style="color: #363636;">{{item.content}}</p>
+          <p style="color: #363636;">{{ item.content }}</p>
           <p>
-            <span style="margin-right: 10px;">{{item.pubdate | relativeTime}}</span>
+            <span style="margin-right: 10px;">{{
+              item.pubdate | relativeTime
+            }}</span>
             <van-button size="mini" type="default">回复</van-button>
           </p>
         </div>
@@ -31,8 +33,8 @@
 
     <!-- 发布评论 -->
     <van-cell-group class="publish-wrap">
-      <van-field clearable placeholder="请输入评论内容">
-        <van-button slot="button" size="mini" type="info">发布</van-button>
+      <van-field clearable placeholder="请输入评论内容" v-model="content">
+        <van-button slot="button" size="mini" type="info" @click="addComment">发布</van-button>
       </van-field>
     </van-cell-group>
     <!-- /发布评论 -->
@@ -40,13 +42,14 @@
 </template>
 
 <script>
-import { getArticleComments } from '@/api/comment'
+import { getArticleComments, addArticleComment } from '@/api/comment'
 
 export default {
   name: 'CommentIndex',
   props: ['articleId'],
   data () {
     return {
+      content: '',
       offset: null,
       list: [], // 评论列表
       loading: false, // 上拉加载更多的 loading
@@ -54,6 +57,21 @@ export default {
     }
   },
   methods: {
+    /**
+     * 添加文章评论
+     */
+    async addComment () {
+      let{ data } = await addArticleComment({
+        target: this.articleId,
+        content: this.content
+      })
+      console.log(data)
+      this.list.unshift(data.data.new_obj)
+      this.content = ''
+    },
+    /**
+     * 加载评论列表数据
+     */
     async onLoad () {
       // 异步更新数据
       let { data } = await getArticleComments({
